@@ -27,17 +27,22 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/",function (req,res) {
   let curDate = new Date();
   curDate = curDate.toString().substring(0,3) + "," + curDate.toString().substring(7,10) + curDate.toString().substring(3,7) + curDate.toString().substring(10,28)
-  curDate = curDate.substring(0,3) + "," + curDate.substring(3);
   res.json({"unix":Date.now(),"utc":curDate});
 });
 
 app.get("/api/:date",function (req,res) {
   try {
-  let convDate = new Date(req.params.date);
-  res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
-  
+    if(req.params.date.indexOf("-") != -1)
+    {
+      let convDate = new Date(req.params.date);
+      res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
+    }
+    else if(typeof req.params.date == 'number')
+    {
+      let convDate = Date.parse(req.params.date); res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
+    }
   } catch (error) {
-    res.json({"error":"Invaid Date"});
+    res.json({"error":"Invalid Date"});
   }
 });
 
