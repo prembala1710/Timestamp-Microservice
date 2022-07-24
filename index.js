@@ -33,7 +33,7 @@ app.get("/api/",function (req,res) {
 app.get("/api/:date",function (req,res) {
   console.log(req.params.date);
   try {
-    if(req.params.date.indexOf("-") != -1)
+    if(!isNaN(new Date(req.params.date).getDate()))
     {
       let convDate = new Date(req.params.date);
       if(convDate.toString().length > 28)
@@ -45,7 +45,7 @@ app.get("/api/:date",function (req,res) {
         throw "Invalid Date";
       }
     }
-    else if(typeof Number(req.params.date) == 'number')
+    else if(typeof Number(req.params.date) == 'number' && req.params.date.indexOf("-") == -1 )
     {
       let convDate = new Date(Number(req.params.date)); 
       console.log(convDate);
@@ -54,9 +54,9 @@ app.get("/api/:date",function (req,res) {
     else
     {
       throw "Invalid Date";
-    }s
+    }
   } catch (error) {
-    res.json({"error":"Invalid Date" , "errorr" : error});
+    res.json({"error":"Invalid Date"});
   }
 });
 
