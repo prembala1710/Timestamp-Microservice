@@ -31,18 +31,32 @@ app.get("/api/",function (req,res) {
 });
 
 app.get("/api/:date",function (req,res) {
+  console.log(req.params.date);
   try {
     if(req.params.date.indexOf("-") != -1)
     {
       let convDate = new Date(req.params.date);
+      if(convDate.toString().length > 28)
+      {
+        res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
+      }
+      else
+      {
+        throw "Invalid Date";
+      }
+    }
+    else if(typeof Number(req.params.date) == 'number')
+    {
+      let convDate = new Date(Number(req.params.date)); 
+      console.log(convDate);
       res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
     }
-    else if(typeof req.params.date == 'number')
+    else
     {
-      let convDate = Date.parse(req.params.date); res.json({"unix":convDate.getTime(),"utc":convDate.toString().substring(0,3) + "," + convDate.toString().substring(7,10) + convDate.toString().substring(3,7) + convDate.toString().substring(10,28)});
-    }
+      throw "Invalid Date";
+    }s
   } catch (error) {
-    res.json({"error":"Invalid Date"});
+    res.json({"error":"Invalid Date" , "errorr" : error});
   }
 });
 
